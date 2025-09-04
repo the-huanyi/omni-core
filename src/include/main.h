@@ -3,6 +3,7 @@ void om_initWindow();
 int om_createInstance();
 
 bool om_checkValidationLayerSupport();
+char* om_getRequiredExtensions();
 
 void om_initVulkan();
 void om_mainLoop();

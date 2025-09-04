@@ -89,15 +89,19 @@ int om_createInstance(){
 
 	createInfo.enabledExtensionCount=(uint32_t) requiredExtensions.length;
 	createInfo.ppEnabledExtensionNames= (const char * const*) &requiredExtensions.items;
+
+	if(enableValidationLayers && !om_checkValidationLayerSupport()){
+		printf("validation layers requested but not available!\n");
+		return 1;
+	}
+
 	if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS){
 		printf("failed to create instance!\n");
 		return 1;
 	}	
 	sa_free(&requiredExtensions); //frees memory of first 
-	if(enableValidationLayers && !om_checkValidationLayerSupport()){
-		printf("validation layers requested but not available!\n");
-		return 1;
-	}
+	
+	
 
 }
 
@@ -124,6 +128,20 @@ bool om_checkValidationLayerSupport(){
 	}
 	return true;
 }
+
+
+// GETS LIST OF ALL EXTENSIONS NEEDED, GLFW + EXTRA IF DEBUG
+dynamicArray om_getRequiredExtensions(){
+	uint32_t glfwExtensionCount=0;
+	const char** glfwExtensions;
+	glfwExtensions=
+		glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+	dynamicArray extensions={.length=glfwExtensionCount,.items=glfwExtensions };
+	if (enableValidationLayers) 
+	sa_push_back(&extensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	return extensions;
+}
+
 
 void om_mainLoop(){
 	while(!glfwWindowShouldClose(window)){
