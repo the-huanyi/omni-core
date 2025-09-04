@@ -8,24 +8,23 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include "main.h"
+
+void om_run(){
+	om_initVulkan();
+	om_mainLoop();
+	om_cleanup();
+}
+
+void om_initVulkan(){
+
+}
+void om_mainLoop(){
+
+}
+void om_cleanup(){
+}
 
 int main() {
-	glfwInit();
-	
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window",nullptr, nullptr);
-	
-	uint32_t extensionCount = 0;
-	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,nullptr);
-	
-	printf("%d\n", extensionCount);
-	
-
-	while(!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
-	}
-	
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	return 0;
+		
 }
