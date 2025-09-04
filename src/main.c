@@ -80,16 +80,11 @@ int om_createInstance(){
 	return 0;
 	
 	// EXTENSION LIST 
-	dynamicArray requiredExtensions= {0}; //dynamic required array
-	for(uint32_t i=0; i< glfwExtensionCount; i++) {
-		sa_push_back(&requiredExtensions, (void*)glfwExtensions[i]);
-	}
-	sa_push_back(&requiredExtensions, VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-	createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+	dynamicArray* extensions=(dynamicArray*)om_getRequiredExtensions();	
+	createInfo.enabledExtensionCount=(uint32_t) extensions->length;
+	createInfo.ppEnabledExtensionNames= (const char * const*) extensions->items;
 
-	createInfo.enabledExtensionCount=(uint32_t) requiredExtensions.length;
-	createInfo.ppEnabledExtensionNames= (const char * const*) &requiredExtensions.items;
-
+	// VALiDATION LAYERS
 	if(enableValidationLayers && !om_checkValidationLayerSupport()){
 		printf("validation layers requested but not available!\n");
 		return 1;
@@ -99,7 +94,7 @@ int om_createInstance(){
 		printf("failed to create instance!\n");
 		return 1;
 	}	
-	sa_free(&requiredExtensions); //frees memory of first 
+	//sa_free(&requiredExtensions); //frees memory of first 
 	
 	
 
@@ -131,15 +126,17 @@ bool om_checkValidationLayerSupport(){
 
 
 // GETS LIST OF ALL EXTENSIONS NEEDED, GLFW + EXTRA IF DEBUG
-dynamicArray om_getRequiredExtensions(){
+dynamicArray* om_getRequiredExtensions(){
 	uint32_t glfwExtensionCount=0;
 	const char** glfwExtensions;
 	glfwExtensions=
 		glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-	dynamicArray extensions={.length=glfwExtensionCount,.items=glfwExtensions };
+	dynamicArray extensions={.length=glfwExtensionCount,.items=(void**)glfwExtensions };
 	if (enableValidationLayers) 
 	sa_push_back(&extensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-	return extensions;
+	//dynamicArray* ext=malloc(sizeof(dynamicArray*));
+	//memcpy(ext,extensions
+	return &extensions;
 }
 
 
