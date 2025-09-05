@@ -100,6 +100,7 @@ int om_createInstance(){
 
 }
 
+
 bool om_checkValidationLayerSupport(){
 	uint32_t layerCount;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -138,6 +139,18 @@ dynamicArray* om_getRequiredExtensions(){
 	//memcpy(ext,extensions
 	return &extensions;
 }
+
+static VKAPI_ATTR VkBool32 VKAPI_CALL debufCallback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		void* pUserData){
+	
+	printf("Validation error: \n%s\n",pCallbackData->pMessage);
+	return VK_FALSE;
+}
+
+
 
 
 void om_mainLoop(){
